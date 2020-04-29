@@ -11,4 +11,10 @@ object Counter {
     case Nil => c
   }
 
+  def count_if[A](in: List[A], filter: (A) => Boolean): Int = in match {
+    case a :: rest if filter(a) => 1 + count_if(rest, filter)
+    case _ :: rest => count_if(rest, filter)
+    case Nil => 0
+  }
+
 }
