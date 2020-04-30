@@ -1,14 +1,19 @@
 package com.theevilroot.epam.lab6
 
-import scala.annotation.tailrec
-
 object Counter {
 
-  @tailrec
-  def count[A](in: List[A], value: A, c: Int = 0): Int = in match {
-    case a :: rest if a == value => count(rest, value, c + 1)
-    case _ :: rest => count(rest, value, c)
-    case Nil => c
+  def foldl[A, B](f: (A, B) => B, a: B, in: List[A]): B = in match {
+    case x :: rest => f(x, foldl(f, a, rest))
+    case Nil => a
   }
+
+  def map[A, B](in: List[A], f: A => B): List[B] =
+    foldl[A, List[B]]((x, list) => list.appended(f(x)), List(), in)
+
+  def count[A](in: List[A], value: A): Int =
+    foldl[Int, Int]((x, y) => x + y, 0, map[A, Int](in, {
+      case a if a == value => 1
+      case _ => 0
+    }))
 
 }
