@@ -5,7 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 class CounterTests extends AnyFlatSpec {
 
-  "Counter function" should "return 0 on empty collection" in {
+  "count" should "return 0 on empty collection" in {
     assert(Counter.count(List(), 2) == 0)
   }
 
@@ -29,26 +29,31 @@ class CounterTests extends AnyFlatSpec {
     assert(origin == collection)
   }
 
-  "count_if" should "return 0 if collection is empty" in {
-    assert(Counter.count_if[Any](List(), x => true) == 0)
+  "counter" should "return 0 if collection is empty" in {
+    val counter: List[Any] => Int = Counter.counter[Any](_ => true)
+    assert(counter(List()) == 0)
   }
 
   it should "return 0 if all elements does not satisfy filtering condition" in {
-    assert(Counter.count_if[Int](List(1, 2, 3), x => false) == 0)
+    val counter: List[Int] => Int = Counter.counter[Int](_ => false)
+    assert(counter(List(1, 2, 3)) == 0)
   }
 
   it should "return number of elements less than 10" in {
-    assert(Counter.count_if[Int](List(1, 2, 8, 10, 24, 9, 0), x => x < 10) == 5)
+    val counter: List[Int] => Int = Counter.counter[Int](x => x < 10)
+    assert(counter(List(1, 2, 8, 10, 24, 9, 0)) == 5)
   }
 
   it should "return number of string elements with length greater than 3" in {
-    assert(Counter.count_if[String](List("hello", "world", "asd", "scala"), x => x.length > 3) == 3)
+    val counter: List[String] => Int = Counter.counter[String](x => x.length > 3)
+    assert(counter(List("hello", "world", "asd", "scala")) == 3)
   }
 
   it should "not modify collection" in {
+    val counter: List[String] => Int = Counter.counter[String](x => x.length > 3)
     val origin = List("hello", "asd", "scala", "world")
     val collection = origin
-    Counter.count_if[String](collection, x => x.length() > 3)
+    counter(collection)
     assert(origin == collection)
   }
 

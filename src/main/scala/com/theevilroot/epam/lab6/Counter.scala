@@ -16,7 +16,7 @@ object Counter {
       case _ => 0
     }))
 
-  def count_if[A](in: List[A], filter: A => Boolean): Int =
+  def counter[A](filter: A => Boolean)(in: List[A]): Int =
     foldl[Int, Int]((x, y) => x + y, 0, map[A, Int](in, {
       case a if filter(a) => 1
       case _ => 0
